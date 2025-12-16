@@ -24,7 +24,7 @@ The goal of roarutility is to process ROAR data. It provides convenience functio
 
 You can install the development version of roarutility from [GitHub](https://github.com/) with:
 
-```{r install}
+```{r install, eval-FALSE, output=FALSE}
 # install.packages("pak")
 pak::pak("kellywentz/roarutility")
 ```
@@ -40,5 +40,5 @@ new_data <- roar.read.csv("all_core_runs_2025-05-27.csv",
               "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
 ```
 
-Notice how the output dataframe has removed all possible opt-outs from the most up-to-date opt-out CSV. 
+Notice how the output dataframe has removed all possible opt-outs from the most up-to-date opt-out CSV.  
 

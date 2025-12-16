@@ -19,9 +19,6 @@ You can install the development version of roarutility from
 ``` r
 # install.packages("pak")
 pak::pak("kellywentz/roarutility")
-#> 
-#> ℹ No downloads are needed
-#> ✔ 1 pkg: kept 1 [2s]
 ```
 
 ## Usage
