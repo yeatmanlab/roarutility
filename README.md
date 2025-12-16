@@ -1,2 +1,37 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 # roarutility
-A package of functions to process ROAR data. 
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+The goal of roarutility is to process ROAR data. It provides convenience
+functions to make some common cleaning and processing tasks with ROAR
+data a bit easier.
+
+## Installation
+
+You can install the development version of roarutility from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("kellywentz/roarutility")
+```
+
+## Usage
+
+This is a basic example which shows you how to read in ROAR data and
+remove opt-outs in one line of code.
+
+``` r
+library(roarutility)
+new_data <- roar.read.csv("all_core_runs_2025-05-27.csv", 
+              "~/Documents/GitHub/roar-technical-manual/data",
+              "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
+```
+
+Notice how the output dataframe has removed all possible opt-outs from
+the most up-to-date opt-out CSV.
