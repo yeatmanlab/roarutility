@@ -12,7 +12,10 @@ Imports:
     googledrive,
     dplyr,
     utils, 
-    readr
+    readr, 
+    stringr, 
+    magrittr, 
+    tidyselect
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

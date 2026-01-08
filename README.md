@@ -23,6 +23,8 @@ pak::pak("kellywentz/roarutility")
 
 ## Usage
 
+### roar.read.csv
+
 This is a basic example which shows you how to read in ROAR data and
 remove opt-outs in one line of code.
 
@@ -35,3 +37,27 @@ new_data <- roar.read.csv("all_core_runs_2025-05-27.csv",
 
 Notice how the output dataframe has removed all possible opt-outs from
 the most up-to-date opt-out CSV.
+
+### clean_strings
+
+This is a basic example which shows you how clean_strings() takes in
+data and spits out data that has removed extra characters from assigning
+organization variables and converted empty strings to NA values.
+
+``` r
+library(roaryutility)
+test_df <- data.frame(
+  assigning_schools = c("[irNgj3c]", "irNgj3c"),
+  age = c("", "6.7")
+)
+
+clean_df <- clean_strings(test_df) 
+clean_df 
+#   assigning_schools  age
+# 1           irNgj3c <NA>
+# 2           irNgj3c  6.7
+```
+
+Notice how the output dataframe has removed the “\[\]” characters from
+the assigning_schools variable and has converted the empty string value
+in age to an NA value.

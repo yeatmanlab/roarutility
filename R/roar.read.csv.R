@@ -1,10 +1,16 @@
 #' Read ROAR data and remove opt-outs
 #'
+#' @description
+#' Read ROAR data using read.csv() and remove opt-outs from the df using the
+#' provided Google Drive link. Filters the opt-outs in "PID", "pid",
+#' "assessment_pid", "user.assessmentPid" columns.
+#'
+#'
 #' @param data_name Name of the data file
 #' @param data_path Path to the data file
 #' @param opt_out_link Google Drive link to most up-to-date opt-out file
 #'
-#' @return A data frame with opt-outs removed
+#' @return A dataframe with opt-outs removed
 #' @export
 #'
 #' @importFrom googledrive drive_auth drive_download as_id

@@ -14,8 +14,10 @@ roar.read.csv(data_name, data_path, opt_out_link)
 \item{opt_out_link}{Google Drive link to most up-to-date opt-out file}
 }
 \value{
-A data frame with opt-outs removed
+A dataframe with opt-outs removed
 }
 \description{
-Read ROAR data and remove opt-outs
+Read ROAR data using read.csv() and remove opt-outs from the df using the
+provided Google Drive link. Filters the opt-outs in "PID", "pid",
+"assessment_pid", "user.assessmentPid" columns.
 }
