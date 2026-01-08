@@ -41,7 +41,7 @@ the most up-to-date opt-out CSV.
 ### clean_strings
 
 This is a basic example which shows you how clean_strings() takes in
-data and spits out data that has removed extra characters from assigning
+data and outputs data that has removed extra characters from assigning
 organization variables and converted empty strings to NA values.
 
 ``` r
@@ -61,3 +61,25 @@ clean_df
 Notice how the output dataframe has removed the “\[\]” characters from
 the assigning_schools variable and has converted the empty string value
 in age to an NA value.
+
+### remove_empty_cols
+
+This is a basic example which shows you how remove_empty_cols() takes in
+a dataframe with a column with all NA values and outputs data that has
+removed the columns with all NA values.
+
+``` r
+library(roarutility)
+test_df <- data.frame(
+  firstname = c("Jane", "John", NA, "Kelly"),
+  lastname = c("Doe", NA, NA, "Smith"),
+  middlename = c(NA, NA, NA, NA)
+)
+
+clean_df <- remove_empty_cols(test_df) 
+names(clean_df) 
+# [1] "firstname" "lastname" 
+```
+
+Notice how the output dataframe has removed the column “middlename”
+because it consisted of all NA values.
