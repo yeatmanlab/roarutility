@@ -35,5 +35,15 @@ or not to remove NA assessment_pid/accounts/participants}
 A dataframe with the indicated remaining account types
 }
 \description{
-Remove test, demo, pilot, QA, or NA accounts
+Removes all indicated accounts from the dataframe. Reseearchers can read in
+data and indicate which or all of the following types of accounts they would
+like to remove from the dataframe. The function defaults to removing test,
+demo, pilot, and QA accounts and defaults to not removing NA assessment_pid.
+The function runs through the organization IDs
+(i.e., assigning_districts, etc.). It also uses string detection to
+determine if there are any "test", "pilot", "qa", or "demo" strings
+within the assessment_pid column. Finally, it runs through to determine
+if there are test or demo using the variables is_test_data and is_demo_data
+(if these accounts were chosen to be removed). If selected, the function
+will also remove assessment_pid = NA.
 }
