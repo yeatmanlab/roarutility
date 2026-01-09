@@ -15,16 +15,29 @@ within the dataframes, cleaning demographics, and more.
 \details{
 Key functions in this package include:
 \itemize{
-\item \code{\link{roar.read.csv}}: Read ROAR data and remove opt-outs
-\item \code{\link{remove_accounts}}: Remove test, demo, pilot, QA, or NA accounts by selection
+\item \code{\link{roar.read.csv}}: Read ROAR data and remove opt-outs.
+\item \code{\link{remove_accounts}}: Remove test, demo, pilot, QA, or NA
+accounts by selection.
+\item \code{\link{clean_strings}}: Remove extra characters from assigning
+organization variables and convert empty strings to NA values.
+\item \code{\link{remove_empty_cols}}: Remove columns with all NA values.
+\item \code{\link{remove_duplicates}}: Remove duplicate rows.
 }
 }
 \section{Typical Workflow}{
 
 \enumerate{
-\item Load your data
-\item Use \code{remove_accounts()} to keep real assessment data and accounts
-\item Continue with your analysis
+\item Load your data using roar.read.csv()
+\item Use \code{clean_strings()} to remove extra characters from assigning.
+organization variables to prepare for merging with the organization key. Also
+the function converts all empty strings "" to NA values which allows for
+filtering ease.
+\item Use \code{remove_empty_cols()} to remove columns with all NA values to
+produce a cleaner dataframe with necessary variables only
+\item Use \code{remove_duplicates()} to remove duplicate rows and maintain a
+dataframe with unique observations for clearer counts.
+\item Use \code{remove_accounts()} to remove a selection of test, demo, pilot,
+and QA accounts. Researchers also have the option of removing NA assessment_pid.
 }
 }
 
@@ -36,11 +49,6 @@ library(roarutility)
 # Read in ROAR data and simulatenously remove opt-outs
 new_data <- roar.read.csv("all_runs.csv", "~/Documents",
 "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
-}
-
-\dontrun{
-# Load package
-library(roarutility)
 
 # Remove test and demo accounts
 clean_data <- remove_accounts(my_data, test = TRUE, demo = TRUE)
@@ -54,4 +62,6 @@ clean_data <- remove_accounts(my_data, test = FALSE, demo = FALSE,
 \author{
 Kelly Wentzlof
 }
+\keyword{convenience}
+\keyword{roar}
 \keyword{utility}

@@ -20,9 +20,17 @@
 #' }
 #'
 #' @section Typical Workflow:
-#' 1. Load your data
-#' 2. Use \code{remove_accounts()} to keep real assessment data and accounts
-#' 3. Continue with your analysis
+#' 1. Load your data using roar.read.csv()
+#' 2. Use \code{clean_strings()} to remove extra characters from assigning.
+#' organization variables to prepare for merging with the organization key. Also
+#' the function converts all empty strings "" to NA values which allows for
+#' filtering ease.
+#' 3. Use \code{remove_empty_cols()} to remove columns with all NA values to
+#' produce a cleaner dataframe with necessary variables only
+#' 4. Use \code{remove_duplicates()} to remove duplicate rows and maintain a
+#' dataframe with unique observations for clearer counts.
+#' 5. Use \code{remove_accounts()} to remove a selection of test, demo, pilot,
+#' and QA accounts. Researchers also have the option of removing NA assessment_pid.
 #'
 #' @examples
 #' \dontrun{
@@ -32,12 +40,6 @@
 #' # Read in ROAR data and simulatenously remove opt-outs
 #' new_data <- roar.read.csv("all_runs.csv", "~/Documents",
 #' "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
-#' }
-#'
-#' @examples
-#' \dontrun{
-#' # Load package
-#' library(roarutility)
 #'
 #' # Remove test and demo accounts
 #' clean_data <- remove_accounts(my_data, test = TRUE, demo = TRUE)
@@ -48,5 +50,5 @@
 #' }
 #'
 #' @author Kelly Wentzlof
-#' @keywords utility
+#' @keywords roar utility convenience
 "_PACKAGE"
