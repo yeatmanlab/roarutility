@@ -37,8 +37,8 @@ This is a basic example which shows you how to read in ROAR data and remove opt-
 
 ```{r example-roar-read-csv, eval=FALSE}
 library(roarutility)
-new_data <- roar.read.csv("all_core_runs_2025-05-27.csv", 
-              "~/Documents/GitHub/roar-technical-manual/data",
+new_data <- roar.read.csv("all_runs.csv", 
+              "~/Documents",
               "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
 ```
 
@@ -82,3 +82,20 @@ names(clean_df)
 ```
 
 Notice how the output dataframe has removed the column "middlename" because it consisted of all NA values. 
+
+### remove_duplicates
+
+This is a basic example which shows you how remove_duplicates() removes all identical rows across every column. 
+```{r example-remove-duplicates, eval=FALSE}
+library(roarutility) 
+test_df <- data.frame(
+  assessment_pid = c("123", "456", NA, "789", "123"),
+  roarScore = c(45, 32, 34, 10, 45)
+)
+
+clean_df <- remove_duplicates(test_df)
+clean_df$assessment_pid
+#[1] "123" "456" NA    "789"
+```
+
+Notice how the last row test_df[5,] was removed because it had identical values across both columns (assessment_pid and roarScore) as the first row test_df[1,]. 
