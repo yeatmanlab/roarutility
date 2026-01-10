@@ -16,3 +16,8 @@ A dataframe with NAs rather than empty strings and no extra characters in assign
 Remove extra characters from assigning organization variables and convert
 empty strings to NA values.
 }
+\examples{
+test_df <- data.frame(assigning_schools = c("[irNgj3c]", "irNgj3c"),
+                      age = c("", "6.7"))
+clean_df <- clean_strings(test_df)
+}

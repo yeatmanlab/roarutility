@@ -21,3 +21,9 @@ Read ROAR data using read.csv() and remove opt-outs from the df using the
 provided Google Drive link. Filters the opt-outs in "PID", "pid",
 "assessment_pid", "user.assessmentPid" columns.
 }
+\examples{
+\dontrun{
+new_data <- roar.read.csv("all_runs.csv", "~/Documents",
+"https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
+}
+}

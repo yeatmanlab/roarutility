@@ -16,6 +16,11 @@
 #' @importFrom dplyr na_if
 #' @importFrom magrittr %>%
 #' @importFrom tidyselect where
+#'
+#' @examples
+#' test_df <- data.frame(assigning_schools = c("[irNgj3c]", "irNgj3c"),
+#'                       age = c("", "6.7"))
+#' clean_df <- clean_strings(test_df)
 clean_strings <- function(df){
 
   cols_to_clean <- c("assigning_districts", "assigning_schools",

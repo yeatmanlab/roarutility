@@ -16,3 +16,8 @@ A dataframe that contains only unique rows
 Removing duplicate rows ensures researchers are accurately counting each unique
 student, run, or trial.
 }
+\examples{
+test_df <- data.frame(assessment_pid = c("123", "456", NA, "789", "123"),
+                      roarScore = c(45, 32, 34, 10, 45))
+clean_df <- remove_duplicates(test_df)
+}

@@ -17,3 +17,9 @@ There are many columns within the ROAR dataframes that only apply to specific as
 Removing the columns that only contain NA values, allows researchers to isolate
 important variables.
 }
+\examples{
+test_df <- data.frame(firstname = c("Jane", "John", NA, "Kelly"),
+                      lastname = c("Doe", NA, NA, "Smith"),
+                      middlename = c(NA, NA, NA, NA))
+clean_df <- remove_empty_cols(test_df)
+}
