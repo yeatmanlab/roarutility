@@ -22,9 +22,10 @@ accounts by selection.
 organization variables and convert empty strings to NA values.
 \item \code{\link{remove_empty_cols}}: Remove columns with all NA values.
 \item \code{\link{remove_duplicates}}: Remove duplicate rows.
+\item \code{\link{estimate_grade}}: Estimates grade using age in months.
 }
 }
-\section{Typical Workflow}{
+\section{Typical ROAR Assessment Data Workflow}{
 
 \enumerate{
 \item Load your data using roar.read.csv()
@@ -38,25 +39,72 @@ produce a cleaner dataframe with necessary variables only
 dataframe with unique observations for clearer counts.
 \item Use \code{remove_accounts()} to remove a selection of test, demo, pilot,
 and QA accounts. Researchers also have the option of removing NA assessment_pid.
+\item Use \code{standardize_grade()} to convert grade values to standard uniform values
+that can be easily filtered, manipulated, and organized.
+\item Use \code{estimate_grade()} to estimate missing grade or incorrectly stored
+grades using age in months.
+\item Use \code{filter_assessments()} to select which criteria should
+be used to filter the assessments (e.g, filtering best_run, reliable,
+and/or complete assessments for the assessments where these features are active).
 }
 }
 
 \examples{
-\dontrun{
 # Load package
 library(roarutility)
 
+# Using remove_empty_cols
+test_df <- data.frame(firstname = c("Jane", "John", NA, "Kelly"),
+                      lastname = c("Doe", NA, NA, "Smith"),
+                      middlename = c(NA, NA, NA, NA))
+clean_df <- remove_empty_cols(test_df)
+
+# Using clean_strings
+test_df <- data.frame(assigning_schools = c("[irNgj3c]", "irNgj3c"),
+                      age = c("", "6.7"))
+clean_df <- clean_strings(test_df)
+
+# Using remove_duplicates
+test_df <- data.frame(assessment_pid = c("123", "456", NA, "789", "123"),
+                      roarScore = c(45, 32, 34, 10, 45))
+clean_df <- remove_duplicates(test_df)
+
+
+\dontrun{
+# Using roar.read.csv
 # Read in ROAR data and simulatenously remove opt-outs
 new_data <- roar.read.csv("all_runs.csv", "~/Documents",
 "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
 
+# Using remove_accounts
 # Remove test and demo accounts
 clean_data <- remove_accounts(my_data, test = TRUE, demo = TRUE)
-
 # Keep everything except NA values
 clean_data <- remove_accounts(my_data, test = FALSE, demo = FALSE,
                                pilot = FALSE, qa = FALSE, na = TRUE)
+
+# Using estimate_grade
+df <- df \%>\%
+      mutate(user_grade_at_run = ifelse(time_started < as.Date("2024-07-31"),
+             map_chr(age_months_at_run, estimate_grade),user_grade_at_run))
+# estimate grade for anyone with missing grade
+df <- df \%>\%
+      mutate(user_grade_at_run = ifelse(is.na(user_grade_at_run),
+             map_chr(age_months_at_run, estimate_grade),user_grade_at_run))
+
+# Using estimate_grade
+test_df <- data.frame(
+  age_months = c(75, 83, 99, 200),
+  user_grade = c(NA, "2", "2", "10"),
+  time_started = c("2025-03-12", "2024-02-17", "2026-01-09", "2025-04-19"))
+clean_df <- test_df \%>\% mutate(user_grade = case_when(
+  time_started < as.Date("2024-07-31") ~ map_chr(age_months, estimate_grade),
+  TRUE ~ user_grade))
+clean_df <- clean_df \%>\% mutate(user_grade = case_when(
+  is.na(user_grade) ~ map_chr(age_months, estimate_grade),
+  TRUE ~ user_grade))
 }
+
 
 }
 \author{
