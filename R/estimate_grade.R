@@ -13,14 +13,16 @@
 #' @importFrom dplyr case_when
 #'
 #' @examples
-#' \dontrun{
-#' # estimate grade for anyone before 24-25 school year because of incorrect grades
-#' df <- df %>% mutate(user_grade = dplyr::case_when(time_started < as.Date("2024-07-31") ~
-#'                                             map_chr(age_months, estimate_grade), TRUE ~ user_grade))
-#' # estimate grade for anyone with missing grade
-#' df <- df %>% mutate(user_grade = dplyr::case_when(is.na(user_grade) ~
-#'                     purrr::map_chr(age_months, estimate_grade), TRUE ~ user_grade))
-#' }
+#' test_df <- data.frame(
+#'   age_months = c(75, 83, 99, 200),
+#'   user_grade = c(NA, "2", "2", "10"),
+#'   time_started = c("2025-03-12", "2024-02-17", "2026-01-09", "2025-04-19")
+#' clean_df <- test_df %>% mutate(user_grade = case_when(
+#'   time_started < as.Date("2024-07-31") ~ map_chr(age_months, estimate_grade),
+#'   TRUE ~ user_grade))
+#' clean_df <- clean_df %>% mutate(user_grade = case_when(
+#'   is.na(user_grade) ~ map_chr(age_months, estimate_grade),
+#'   TRUE ~ user_grade))
 estimate_grade <- function(age_months_at_run) {
   # Determine the grade based on age in months
   if (age_months_at_run < 60) {  # Less than 5 years old
