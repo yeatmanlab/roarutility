@@ -17,6 +17,12 @@
 #' @importFrom utils read.csv
 #' @importFrom readr read_csv
 #' @importFrom dplyr filter
+#'
+#' @examples
+#' \dontrun{
+#' new_data <- roar.read.csv("all_runs.csv", "~/Documents",
+#' "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
+#' }
 roar.read.csv <- function(data_name, data_path, opt_out_link){
 
   # Declare variables to avoid notes on check()
