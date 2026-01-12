@@ -15,6 +15,11 @@
 #' @importFrom magrittr %>%
 #' @importFrom rlang sym
 #' @importFrom rlang :=
+#'
+#' @examples
+#' test_df <- data.frame(user.grade = c("2", "1", "01", "2nd", "k",
+#'                                      "Kindergarten", "1", "09"))
+#' clean_df <- standardize_grade(test_df, "user.grade")
 standardize_grade <- function(df, grade_col="user_grade_at_run") {
   data_cleaned <- df %>% dplyr::mutate(!!grade_col := case_when(
     !!rlang::sym(grade_col) %in% c("Kindergarten", "K", "Kindergarden", "k") ~ "Kindergarten",

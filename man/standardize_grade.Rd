@@ -19,3 +19,8 @@ A dataframe with uniform grade values
 Create uniform values for grade (e.g., "2", "two", and "2nd" all
 become "2").
 }
+\examples{
+test_df <- data.frame(user.grade = c("2", "1", "01", "2nd", "k",
+                                     "Kindergarten", "1", "09"))
+clean_df <- standardize_grade(test_df, "user.grade")
+}
