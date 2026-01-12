@@ -18,6 +18,7 @@
 #'   \item \code{\link{remove_empty_cols}}: Remove columns with all NA values.
 #'   \item \code{\link{remove_duplicates}}: Remove duplicate rows.
 #'   \item \code{\link{estimate_grade}}: Estimates grade using age in months.
+#'   \item \code{\link{standardize_grade}}: Standardizes grade to contain uniform values.
 #' }
 #'
 #' @section Typical ROAR Assessment Data Workflow:
@@ -60,6 +61,10 @@
 #'                       roarScore = c(45, 32, 34, 10, 45))
 #' clean_df <- remove_duplicates(test_df)
 #'
+#' # Using standardize_grade
+#' test_df <- data.frame(user.grade = c("2", "1", "01", "2nd", "k",
+#'                                      "Kindergarten", "1", "09"))
+#' clean_df <- standardize_grade(test_df, "user.grade")
 #'
 #' \dontrun{
 #' # Using roar.read.csv

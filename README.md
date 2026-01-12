@@ -161,3 +161,25 @@ of the run. In the second example, we use the function to fill in
 missing grades using age in months. The only grade that changes is in
 row 1 and function accurately fills in the missing value for grade with
 “1” for 1st grade.
+
+### standardize_grade
+
+This is a basic example which shows you how standardize_grade() uses a
+grade variable and dataframe to create uniform values in grade.
+
+``` r
+library(roarutility)
+test_df <- data.frame(user.grade = c("2", "1", "01", "2nd", "k",
+                                     "Kindergarten", "1", "09"))
+clean_df <- standardize_grade(test_df, "user.grade")
+clean_df$user.grade
+# [1] "2"            "1"            "1"           
+# [4] "2"            "Kindergarten" "Kindergarten"
+# [7] "1"            "9"  
+```
+
+Notice how the grades went from nonuniform values “2”, “2nd”, “01” to
+more uniform values which can help researchers with filtering, faceting,
+and overall data organizations.
+
+### filter_assessments
