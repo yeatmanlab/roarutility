@@ -19,6 +19,7 @@
 #'   \item \code{\link{remove_duplicates}}: Remove duplicate rows.
 #'   \item \code{\link{estimate_grade}}: Estimates grade using age in months.
 #'   \item \code{\link{standardize_grade}}: Standardizes grade to contain uniform values.
+#'   \item \code{\link{filter_assessments}}: Filter complete, best, and reliable runs by selection.
 #' }
 #'
 #' @section Typical ROAR Assessment Data Workflow:
