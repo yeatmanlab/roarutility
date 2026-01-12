@@ -158,3 +158,29 @@ Notice how the grades went from nonuniform values "2", "2nd", "01" to more unifo
 
 ### filter_assessments
 
+This is a basic example which shows you how filter_assessments maintains the assessments that have completed runs in the first example and completed, best, and reliable runs in the second example. 
+
+```{r example-filter-assessments, eval=FALSE}
+library(roarutility)
+test_df <- data.frame(
+  task_id = c("roam-alpaca", "swr", "sre", "letter", "sre-es", "swr-es"),
+  completed = c("true", "true", "false", "true", "false", "false"),
+  best_run = c(NA, "true", "false", "true", NA, NA),
+  reliable = c(NA, "true", "false", "true", NA, NA)
+)
+
+clean_df <- filter_assessments(test_df) 
+clean_df
+#       task_id completed best_run reliable
+# 1 roam-alpaca      true     <NA>     <NA>
+# 2         swr      true     true     true
+# 3      letter      true     true     true
+
+clean_df <- filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=TRUE)
+clean_df
+#   task_id completed best_run reliable
+# 1     swr      true     true     true
+# 2  letter      true     true     true
+```
+
+Notice how in the first example, filter_assessments() only keeps the assessments where completed=="true", but did not consider the values for best_run and reliable. In the second example, we indicate that we also want to consider best_run and reliable variables as well as completed. As you can see, the function only keeps those which have all "true" values. 

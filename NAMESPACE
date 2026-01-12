@@ -2,6 +2,7 @@
 
 export(clean_strings)
 export(estimate_grade)
+export(filter_assessments)
 export(remove_accounts)
 export(remove_duplicates)
 export(remove_empty_cols)
