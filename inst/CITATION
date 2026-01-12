@@ -1,0 +1,16 @@
+bibentry(
+  bibtype = "Manual",
+  title = "{roarutility}: Convenience Functions for ROAR Data Processing",
+  author = person("Kelly", "Wentzlof"),
+  year = format(Sys.Date(), "%Y"),
+  note = paste("R package version", meta$Version),
+  url = "https://github.com/yeatmanlab/roarutility",
+  textVersion = paste(
+  "Wentzlof, K.",
+  paste0("(", format(Sys.Date(), "%Y"), "),"),
+  "roarutility: Convenience Functions for ROAR Data Processing.",
+  paste("R package version", meta$Version),
+  "https://github.com/yeatmanlab/roarutility"
+  )
+
+)
