@@ -23,15 +23,197 @@ pak::pak("kellywentz/roarutility")
 
 ## Usage
 
+### roar.read.csv
+
 This is a basic example which shows you how to read in ROAR data and
 remove opt-outs in one line of code.
 
 ``` r
 library(roarutility)
-new_data <- roar.read.csv("all_core_runs_2025-05-27.csv", 
-              "~/Documents/GitHub/roar-technical-manual/data",
+new_data <- roar.read.csv("all_runs.csv", 
+              "~/Documents",
               "https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
 ```
 
 Notice how the output dataframe has removed all possible opt-outs from
 the most up-to-date opt-out CSV.
+
+### clean_strings
+
+This is a basic example which shows you how clean_strings() takes in
+data and outputs data that has removed extra characters from assigning
+organization variables and converted empty strings to NA values.
+
+``` r
+library(roaryutility)
+test_df <- data.frame(
+  assigning_schools = c("[irNgj3c]", "irNgj3c"),
+  age = c("", "6.7")
+)
+
+clean_df <- clean_strings(test_df) 
+clean_df 
+#   assigning_schools  age
+# 1           irNgj3c <NA>
+# 2           irNgj3c  6.7
+```
+
+Notice how the output dataframe has removed the “\[\]” characters from
+the assigning_schools variable and has converted the empty string value
+in age to an NA value.
+
+### remove_empty_cols
+
+This is a basic example which shows you how remove_empty_cols() takes in
+a dataframe with a column with all NA values and outputs data that has
+removed the columns with all NA values.
+
+``` r
+library(roarutility)
+test_df <- data.frame(
+  firstname = c("Jane", "John", NA, "Kelly"),
+  lastname = c("Doe", NA, NA, "Smith"),
+  middlename = c(NA, NA, NA, NA)
+)
+
+clean_df <- remove_empty_cols(test_df) 
+names(clean_df) 
+# [1] "firstname" "lastname" 
+```
+
+Notice how the output dataframe has removed the column “middlename”
+because it consisted of all NA values.
+
+### remove_duplicates
+
+This is a basic example which shows you how remove_duplicates() removes
+all identical rows across every column.
+
+``` r
+library(roarutility) 
+test_df <- data.frame(
+  assessment_pid = c("123", "456", NA, "789", "123"),
+  roarScore = c(45, 32, 34, 10, 45)
+)
+
+clean_df <- remove_duplicates(test_df)
+clean_df$assessment_pid
+#[1] "123" "456" NA    "789"
+```
+
+Notice how the last row test_df\[5,\] was removed because it had
+identical values across both columns (assessment_pid and roarScore) as
+the first row test_df\[1,\].
+
+### remove_accounts
+
+Removes all indicated accounts from the dataframe. Reseearchers can read
+in data and indicate which or all of the following types of accounts
+they would like to remove from the dataframe. The function defaults to
+removing test, demo, pilot, and QA accounts and defaults to not removing
+NA assessment_pid. The function runs through the organization IDs (i.e.,
+assigning_districts, etc.). It also uses string detection to determine
+if there are any “test”, “pilot”, “qa”, or “demo” strings within the
+assessment_pid column. Finally, it runs through to determine if there
+are test or demo using the variables is_test_data and is_demo_data (if
+these accounts were chosen to be removed). If selected, the function
+will also remove assessment_pid = NA.
+
+### estimate_grade
+
+This is a basic example which shows you how estimate_grade() uses
+age_months_at_run to estimate grade for students this school year and
+for students who were missing grade values.
+
+``` r
+library(roarutility)
+test_df <- data.frame(
+  age_months = c(75, 83, 99, 200),
+  user_grade = c(NA, "2", "2", "10"),
+  time_started = c("2025-03-12", "2024-02-17", "2026-01-09", "2025-04-19")
+)
+
+clean_df <- test_df %>% mutate(user_grade = case_when(
+  time_started < as.Date("2024-07-31") ~ map_chr(age_months, estimate_grade),
+  TRUE ~ user_grade))
+clean_df
+#   age_months user_grade time_started
+# 1         75       <NA>   2025-03-12
+# 2         83          1   2024-02-17
+# 3         99          2   2026-01-09
+# 4        200         10   2025-04-19
+
+clean_df <- clean_df %>% mutate(user_grade = case_when(
+  is.na(user_grade) ~ map_chr(age_months, estimate_grade),
+  TRUE ~ user_grade))
+#   age_months user_grade time_started
+# 1         75          1   2025-03-12
+# 2         83          1   2024-02-17
+# 3         99          2   2026-01-09
+# 4        200         10   2025-04-19
+```
+
+Notice in the first example of estimate_grade(), we use it to adjust
+grades that were logged prior to the 24-25 school year. The only grade
+that changes is row 2 and the function accurately recategorizes the
+grade from 2nd to 1st grade based on the age in the months at the time
+of the run. In the second example, we use the function to fill in
+missing grades using age in months. The only grade that changes is in
+row 1 and function accurately fills in the missing value for grade with
+“1” for 1st grade.
+
+### standardize_grade
+
+This is a basic example which shows you how standardize_grade() uses a
+grade variable and dataframe to create uniform values in grade.
+
+``` r
+library(roarutility)
+test_df <- data.frame(user.grade = c("2", "1", "01", "2nd", "k",
+                                     "Kindergarten", "1", "09"))
+clean_df <- standardize_grade(test_df, "user.grade")
+clean_df$user.grade
+# [1] "2"            "1"            "1"           
+# [4] "2"            "Kindergarten" "Kindergarten"
+# [7] "1"            "9"  
+```
+
+Notice how the grades went from nonuniform values “2”, “2nd”, “01” to
+more uniform values which can help researchers with filtering, faceting,
+and overall data organizations.
+
+### filter_assessments
+
+This is a basic example which shows you how filter_assessments maintains
+the assessments that have completed runs in the first example and
+completed, best, and reliable runs in the second example.
+
+``` r
+library(roarutility)
+test_df <- data.frame(
+  task_id = c("roam-alpaca", "swr", "sre", "letter", "sre-es", "swr-es"),
+  completed = c("true", "true", "false", "true", "false", "false"),
+  best_run = c(NA, "true", "false", "true", NA, NA),
+  reliable = c(NA, "true", "false", "true", NA, NA)
+)
+
+clean_df <- filter_assessments(test_df) 
+clean_df
+#       task_id completed best_run reliable
+# 1 roam-alpaca      true     <NA>     <NA>
+# 2         swr      true     true     true
+# 3      letter      true     true     true
+
+clean_df <- filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=TRUE)
+clean_df
+#   task_id completed best_run reliable
+# 1     swr      true     true     true
+# 2  letter      true     true     true
+```
+
+Notice how in the first example, filter_assessments() only keeps the
+assessments where completed==“true”, but did not consider the values for
+best_run and reliable. In the second example, we indicate that we also
+want to consider best_run and reliable variables as well as completed.
+As you can see, the function only keeps those which have all “true”
+values.
