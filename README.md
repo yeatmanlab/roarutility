@@ -18,7 +18,7 @@ You can install the development version of roarutility from
 
 ``` r
 # install.packages("pak")
-pak::pak("kellywentz/roarutility")
+pak::pak("yeatmanlab/roarutility")
 ```
 
 ## Usage

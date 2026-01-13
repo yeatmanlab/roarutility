@@ -26,7 +26,7 @@ You can install the development version of roarutility from [GitHub](https://git
 
 ```{r install, eval-FALSE, output=FALSE}
 # install.packages("pak")
-pak::pak("kellywentz/roarutility")
+pak::pak("yeatmanlab/roarutility")
 ```
 
 ## Usage 
