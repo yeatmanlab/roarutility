@@ -4,10 +4,13 @@
 \alias{remove_empty_cols}
 \title{Remove columns with all NA values}
 \usage{
-remove_empty_cols(df)
+remove_empty_cols(df, verbose = TRUE)
 }
 \arguments{
 \item{df}{The dataframe that contains extra columns containing only NA values}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe with columns that contain some non-NA values

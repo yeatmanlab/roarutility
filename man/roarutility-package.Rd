@@ -22,28 +22,28 @@ accounts by selection.
 organization variables and convert empty strings to NA values.
 \item \code{\link{remove_empty_cols}}: Remove columns with all NA values.
 \item \code{\link{remove_duplicates}}: Remove duplicate rows.
-\item \code{\link{estimate_grade}}: Estimates grade using age in months.
-\item \code{\link{standardize_grade}}: Standardizes grade to contain uniform values.
+\item \code{\link{estimate_grade}}: Estimate grade using age in months.
+\item \code{\link{standardize_grade}}: Standardize grade to contain uniform values.
+\item \code{\link{filter_assessments}}: Filter complete, best, and reliable runs by selection.
 }
 }
 \section{Typical ROAR Assessment Data Workflow}{
 
 \enumerate{
-\item Load your data using roar.read.csv()
-\item Use \code{clean_strings()} to remove extra characters from assigning.
-organization variables to prepare for merging with the organization key. Also
-the function converts all empty strings "" to NA values which allows for
+\item Load data using roar.read.csv().
+\item Use \code{clean_strings()} to remove extra characters from assigning
+organization variables in preparation for merging with the organization key.
+The function also converts all empty strings ("") to NA values which allows for
 filtering ease.
 \item Use \code{remove_empty_cols()} to remove columns with all NA values to
-produce a cleaner dataframe with necessary variables only
+produce a cleaner dataframe with only necessary variables.
 \item Use \code{remove_duplicates()} to remove duplicate rows and maintain a
 dataframe with unique observations for clearer counts.
 \item Use \code{remove_accounts()} to remove a selection of test, demo, pilot,
 and QA accounts. Researchers also have the option of removing NA assessment_pid.
 \item Use \code{standardize_grade()} to convert grade values to standard uniform values
 that can be easily filtered, manipulated, and organized.
-\item Use \code{estimate_grade()} to estimate missing grade or incorrectly stored
-grades using age in months.
+\item Use \code{estimate_grade()} to estimate missing grades using age in months.
 \item Use \code{filter_assessments()} to select which criteria should
 be used to filter the assessments (e.g, filtering best_run, reliable,
 and/or complete assessments for the assessments where these features are active).
@@ -86,7 +86,7 @@ clean_df <- filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=
 # Using roar.read.csv
 # Read in ROAR data and simulatenously remove opt-outs
 new_data <- roar.read.csv("all_runs.csv", "~/Documents",
-"https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
+"google.drive.link")
 
 # Using remove_accounts
 # Remove test and demo accounts
@@ -94,15 +94,6 @@ clean_data <- remove_accounts(my_data, test = TRUE, demo = TRUE)
 # Keep everything except NA values
 clean_data <- remove_accounts(my_data, test = FALSE, demo = FALSE,
                                pilot = FALSE, qa = FALSE, na = TRUE)
-
-# Using estimate_grade
-df <- df \%>\%
-      mutate(user_grade_at_run = ifelse(time_started < as.Date("2024-07-31"),
-             map_chr(age_months_at_run, estimate_grade),user_grade_at_run))
-# estimate grade for anyone with missing grade
-df <- df \%>\%
-      mutate(user_grade_at_run = ifelse(is.na(user_grade_at_run),
-             map_chr(age_months_at_run, estimate_grade),user_grade_at_run))
 
 # Using estimate_grade
 test_df <- data.frame(
@@ -116,7 +107,6 @@ clean_df <- clean_df \%>\% mutate(user_grade = case_when(
   is.na(user_grade) ~ map_chr(age_months, estimate_grade),
   TRUE ~ user_grade))
 }
-
 
 }
 \author{

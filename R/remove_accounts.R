@@ -1,16 +1,16 @@
 #' Remove test, demo, pilot, QA, or NA accounts
 #'
 #' @description
-#' Removes all indicated accounts from the dataframe. Reseearchers can read in
-#'  data and indicate which or all of the following types of accounts they would
+#' Removes all indicated accounts from the dataframe. Reseearchers can
+#' indicate which or all of the following types of accounts they would
 #'  like to remove from the dataframe. The function defaults to removing test,
 #'  demo, pilot, and QA accounts and defaults to not removing NA assessment_pid.
-#'   The function runs through the organization IDs
+#'   The function combs through the organization IDs
 #'   (i.e., assigning_districts, etc.). It also uses string detection to
 #'   determine if there are any "test", "pilot", "qa", or "demo" strings
 #'   within the assessment_pid column. Finally, it runs through to determine
-#'   if there are test or demo using the variables is_test_data and is_demo_data
-#'    (if these accounts were chosen to be removed). If selected, the function
+#'   if there are test or demo accounts using the variables is_test_data and is_demo_data.
+#'   If selected, the function
 #'    will also remove assessment_pid = NA.
 #'
 #' @param df The dataframe that contains all types of accounts
@@ -24,6 +24,8 @@
 #' or not to remove QA accounts/participants
 #' @param na A Boolean value, TRUE or FALSE (default), that indicates whether
 #' or not to remove NA assessment_pid/accounts/participants
+#' @param verbose A Boolean value, TRUE (default) or FALSE, that controls whether
+#' informational messages and warnings are displayed
 #'
 #' @returns A dataframe with the indicated remaining account types
 #' @export
@@ -31,14 +33,50 @@
 #' @importFrom dplyr filter
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_detect
-remove_accounts <- function(df, test=TRUE, demo=TRUE, pilot=TRUE, qa=TRUE, na=FALSE){
+remove_accounts <- function(df, test=TRUE, demo=TRUE, pilot=TRUE, qa=TRUE, na=FALSE, verbose=TRUE){
+
+  # Input validation (errors always show regardless of verbose)
+  if (!is.data.frame(df)) {
+    stop("Input 'df' must be a dataframe")
+  }
+
+  if (nrow(df) == 0) {
+    if (verbose) warning("Input dataframe is empty. Returning empty dataframe.")
+    return(df)
+  }
+
+  if (!is.logical(test) || !is.logical(demo) || !is.logical(pilot) ||
+      !is.logical(qa) || !is.logical(na) || !is.logical(verbose)) {
+    stop("All filter arguments (test, demo, pilot, qa, na, verbose) must be logical (TRUE/FALSE)")
+  }
+
+  # Store initial row count
+  initial_rows <- nrow(df)
 
   # set new dataframe
   data_cleaned <- df
 
+  # Track rows before each filter
+  rows_before_test <- nrow(data_cleaned)
+  rows_before_demo <- nrow(data_cleaned)
+  rows_before_pilot <- nrow(data_cleaned)
+  rows_before_qa <- nrow(data_cleaned)
+  rows_before_na <- nrow(data_cleaned)
+
   # Declare variables to avoid notes on check()
   is_test_data <- is_demo_data <- assessment_pid <- assigning_districts <-
     assigning_groups <- assigning_schools <- NULL
+
+  # Check for expected columns and warn if missing
+  expected_cols <- c("assessment_pid", "assigning_districts", "assigning_schools",
+                     "assigning_groups", "is_test_data", "is_demo_data")
+  missing_cols <- setdiff(expected_cols, names(df))
+
+  if (length(missing_cols) > 0 && verbose) {
+    message("Note: The following columns are not present in the dataframe: ",
+            paste(missing_cols, collapse = ", "))
+    message("Filtering will be limited to available columns only.")
+  }
 
   # Known test orgs
   # known assigning_districts used for testing
@@ -282,89 +320,151 @@ remove_accounts <- function(df, test=TRUE, demo=TRUE, pilot=TRUE, qa=TRUE, na=FA
   # Apply filtering
 
   # if test==TRUE, remove test accounts
-  if(test && "is_test_data" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(is_test_data == "false")
-  }
+  if(test) {
+    rows_before_test <- nrow(data_cleaned)
 
-  if(test && "assigning_districts" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_districts %in% test_districts))
-  }
+    if("is_test_data" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(is_test_data == "false")
+    }
 
-  if(test && "assigning_schools" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_schools %in% test_schools))
-  }
+    if("assigning_districts" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_districts %in% test_districts))
+    }
 
-  if(test && "assigning_groups" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_groups %in% test_groups))
-  }
+    if("assigning_schools" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_schools %in% test_schools))
+    }
 
-  if(test && "assessment_pid" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!str_detect(tolower(assessment_pid), "test"))
-  }
+    if("assigning_groups" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_groups %in% test_groups))
+    }
 
+    if("assessment_pid" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!str_detect(tolower(assessment_pid), c("test", "zzz")))
+    }
+
+    test_removed <- rows_before_test - nrow(data_cleaned)
+    if(verbose && test_removed > 0) {
+      message("Removed ", test_removed, " test account(s)")
+    }
+  }
 
   # if demo==TRUE, remove demo accounts
-  if(demo && "is_demo_data" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(is_demo_data == "false")
-  }
+  if(demo) {
+    rows_before_demo <- nrow(data_cleaned)
 
-  if(demo && "assigning_districts" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_districts %in% demo_districts))
-  }
+    if("is_demo_data" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(is_demo_data == "false")
+    }
 
-  if(demo && "assigning_schools" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_schools %in% demo_schools))
-  }
+    if("assigning_districts" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_districts %in% demo_districts))
+    }
 
-  if(demo && "assessment_pid" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!str_detect(tolower(assessment_pid), "demo"))
+    if("assigning_schools" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_schools %in% demo_schools))
+    }
+
+    if("assessment_pid" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!str_detect(tolower(assessment_pid), "demo"))
+    }
+
+    demo_removed <- rows_before_demo - nrow(data_cleaned)
+    if(verbose && demo_removed > 0) {
+      message("Removed ", demo_removed, " demo account(s)")
+    }
   }
 
   # if pilot==TRUE, remove pilot accounts
-  if(pilot && "assigning_districts" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_districts %in% pilot_districts))
-  }
+  if(pilot) {
+    rows_before_pilot <- nrow(data_cleaned)
 
-  if(pilot && "assigning_schools" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_schools %in% pilot_schools))
-  }
+    if("assigning_districts" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_districts %in% pilot_districts))
+    }
 
-  if(pilot && "assessment_pid" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!str_detect(tolower(assessment_pid), "pilot"))
+    if("assigning_schools" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_schools %in% pilot_schools))
+    }
+
+    if("assessment_pid" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!str_detect(tolower(assessment_pid), "pilot"))
+    }
+
+    pilot_removed <- rows_before_pilot - nrow(data_cleaned)
+    if(verbose && pilot_removed > 0) {
+      message("Removed ", pilot_removed, " pilot account(s)")
+    }
   }
 
   # if qa==TRUE, remove qa accounts
-  if(qa && "assigning_districts" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_districts %in% qa_districts))
-  }
+  if(qa) {
+    rows_before_qa <- nrow(data_cleaned)
 
-  if(qa && "assigning_schools" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!(assigning_schools %in% qa_schools))
-  }
+    if("assigning_districts" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_districts %in% qa_districts))
+    }
 
-  if(qa && "assessment_pid" %in% names(data_cleaned)) {
-    data_cleaned <- data_cleaned %>%
-      dplyr::filter(!str_detect(tolower(assessment_pid), "qa"))
+    if("assigning_schools" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!(assigning_schools %in% qa_schools))
+    }
+
+    if("assessment_pid" %in% names(data_cleaned)) {
+      data_cleaned <- data_cleaned %>%
+        dplyr::filter(!str_detect(tolower(assessment_pid), "qa"))
+    }
+
+    qa_removed <- rows_before_qa - nrow(data_cleaned)
+    if(verbose && qa_removed > 0) {
+      message("Removed ", qa_removed, " QA account(s)")
+    }
   }
 
   # if na==TRUE, remove accounts where assessment_pid==NA
   if(na==TRUE && "assessment_pid" %in% names(data_cleaned)) {
+    rows_before_na <- nrow(data_cleaned)
+
     data_cleaned <- data_cleaned %>%
       dplyr::filter(!is.na(assessment_pid))
+
+    na_removed <- rows_before_na - nrow(data_cleaned)
+    if(verbose && na_removed > 0) {
+      message("Removed ", na_removed, " account(s) with NA assessment_pid")
+    }
+  }
+
+  # Final summary
+  total_removed <- initial_rows - nrow(data_cleaned)
+
+  if(verbose) {
+    message("\n--- Account Removal Summary ---")
+    message("Initial rows: ", initial_rows)
+    message("Final rows: ", nrow(data_cleaned))
+    message("Total removed: ", total_removed, " (",
+            round(100 * total_removed / initial_rows, 2), "%)")
+
+    if(total_removed == 0) {
+      message("No accounts were removed.")
+    }
+  }
+
+  # Warn if all data was removed
+  if(nrow(data_cleaned) == 0 && initial_rows > 0 && verbose) {
+    warning("All rows have been removed. Consider adjusting filter parameters.")
   }
 
   return(data_cleaned)
