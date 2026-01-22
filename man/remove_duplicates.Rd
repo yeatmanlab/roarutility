@@ -4,10 +4,13 @@
 \alias{remove_duplicates}
 \title{Remove duplicate rows}
 \usage{
-remove_duplicates(df)
+remove_duplicates(df, verbose = TRUE)
 }
 \arguments{
 \item{df}{The dataframe that has identical rows}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe that contains only unique rows

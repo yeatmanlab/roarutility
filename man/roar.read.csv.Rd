@@ -4,14 +4,17 @@
 \alias{roar.read.csv}
 \title{Read ROAR data and remove opt-outs}
 \usage{
-roar.read.csv(data_name, data_path, opt_out_link)
+roar.read.csv(data_name, data_path, opt_out_link, verbose = TRUE)
 }
 \arguments{
-\item{data_name}{Name of the data file}
+\item{data_name}{Name of the data file (string)}
 
-\item{data_path}{Path to the data file}
+\item{data_path}{Path to the directory where data file exists (string)}
 
-\item{opt_out_link}{Google Drive link to most up-to-date opt-out file}
+\item{opt_out_link}{Google Drive link to most up-to-date opt-out file (string)}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe with opt-outs removed
@@ -24,6 +27,11 @@ provided Google Drive link. Filters the opt-outs in "PID", "pid",
 \examples{
 \dontrun{
 new_data <- roar.read.csv("all_runs.csv", "~/Documents",
-"https://drive.google.com/file/d/11gYLqU5xT-NMDxWXGQj8WfZ8AVA_lFT9/view?usp=drive_link")
+"google.drive.link")
+
+
+# Silent mode
+new_data <- roar.read.csv("all_runs.csv", "~/Documents",
+"google.drive.link", verbose = FALSE)
 }
 }

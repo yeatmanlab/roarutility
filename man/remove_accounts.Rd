@@ -10,7 +10,8 @@ remove_accounts(
   demo = TRUE,
   pilot = TRUE,
   qa = TRUE,
-  na = FALSE
+  na = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -30,20 +31,23 @@ or not to remove QA accounts/participants}
 
 \item{na}{A Boolean value, TRUE or FALSE (default), that indicates whether
 or not to remove NA assessment_pid/accounts/participants}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe with the indicated remaining account types
 }
 \description{
-Removes all indicated accounts from the dataframe. Reseearchers can read in
-data and indicate which or all of the following types of accounts they would
+Removes all indicated accounts from the dataframe. Reseearchers can
+indicate which or all of the following types of accounts they would
 like to remove from the dataframe. The function defaults to removing test,
 demo, pilot, and QA accounts and defaults to not removing NA assessment_pid.
-The function runs through the organization IDs
+The function combs through the organization IDs
 (i.e., assigning_districts, etc.). It also uses string detection to
 determine if there are any "test", "pilot", "qa", or "demo" strings
 within the assessment_pid column. Finally, it runs through to determine
-if there are test or demo using the variables is_test_data and is_demo_data
-(if these accounts were chosen to be removed). If selected, the function
+if there are test or demo accounts using the variables is_test_data and is_demo_data.
+If selected, the function
 will also remove assessment_pid = NA.
 }

@@ -4,16 +4,19 @@
 \alias{estimate_grade}
 \title{Estimate grade using age in months}
 \usage{
-estimate_grade(age_months_at_run)
+estimate_grade(age_months_at_run, verbose = TRUE)
 }
 \arguments{
 \item{age_months_at_run}{The variable that is associated with age in months}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe with estimated and corrected grades
 }
 \description{
-If grade is missing or incorrect, use this function to estimate grade based
+If grade is missing or needs to be corrected, use this function to estimate grade based
 on age in months at the time of the run.
 }
 \examples{

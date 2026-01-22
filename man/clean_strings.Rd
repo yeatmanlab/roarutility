@@ -4,10 +4,13 @@
 \alias{clean_strings}
 \title{Clean string variables in ROAR data}
 \usage{
-clean_strings(df)
+clean_strings(df, verbose = TRUE)
 }
 \arguments{
 \item{df}{The dataframe that needs to be cleaned}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe with NAs rather than empty strings and no extra characters in assigning organization variables

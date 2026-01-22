@@ -4,13 +4,16 @@
 \alias{standardize_grade}
 \title{Standardize grade to uniform values}
 \usage{
-standardize_grade(df, grade_col = "user_grade_at_run")
+standardize_grade(df, grade_col = "user_grade_at_run", verbose = TRUE)
 }
 \arguments{
 \item{df}{The dataframe that has inconsistent grade values}
 
 \item{grade_col}{The grade variable that needs to be standardized
-(e.g., "user_grade_at_run" (default))}
+(e.g., "user_grade_at_run" (default)) (string)}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
 A dataframe with uniform grade values

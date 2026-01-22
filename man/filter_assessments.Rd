@@ -4,25 +4,34 @@
 \alias{filter_assessments}
 \title{Filter completed, best, and reliable runs}
 \usage{
-filter_assessments(df, completed = TRUE, reliable = FALSE, best_run = FALSE)
+filter_assessments(
+  df,
+  completed = TRUE,
+  reliable = FALSE,
+  best_run = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{df}{The dataframe that contains all runs including incomplete, non-best,
-and unreliable runs.}
+and unreliable runs}
 
-\item{completed}{A string value, TRUE (default) or FALSE, that indicates if
-the researcher wants to remove incomplete runs.}
+\item{completed}{A Boolean value, TRUE (default) or FALSE, that indicates if
+the researcher wants to remove incomplete runs}
 
 \item{reliable}{A Boolean value, TRUE or FALSE (default), that indicates if
 the researcher wants to remove unreliable runs. Note: this feature is only
-implemented in the ROAR core assessments.}
+implemented in the ROAR core assessments}
 
 \item{best_run}{A Boolean value, TRUE or FALSE (default), that indicates if
 the researchers wants to keep only the best run within each administration.
-Note: this feature is only implemented in some of the ROAR assessments.}
+Note: this feature is only implemented in some of the ROAR assessments}
+
+\item{verbose}{A Boolean value, TRUE (default) or FALSE, that controls whether
+informational messages and warnings are displayed}
 }
 \value{
-A dataframe that has properly filtered the indicated runs.
+A dataframe that has properly filtered the indicated runs
 }
 \description{
 Filters for completed, best, and reliable runs based on selection. Completed runs
