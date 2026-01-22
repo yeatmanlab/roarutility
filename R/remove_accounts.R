@@ -345,7 +345,7 @@ remove_accounts <- function(df, test=TRUE, demo=TRUE, pilot=TRUE, qa=TRUE, na=FA
 
     if("assessment_pid" %in% names(data_cleaned)) {
       data_cleaned <- data_cleaned %>%
-        dplyr::filter(!str_detect(tolower(assessment_pid), c("test", "zzz")))
+        dplyr::filter(!str_detect(tolower(assessment_pid), "test|zzz"))
     }
 
     test_removed <- rows_before_test - nrow(data_cleaned)
