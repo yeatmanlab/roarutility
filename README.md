@@ -13,12 +13,34 @@ data a bit easier.
 
 ## Installation
 
-You can install the development version of roarutility from
-[GitHub](https://github.com/) with:
+1.  Download and install Git on your computer (<https://git-scm.com/>).
+
+2.  Configure Git in RStudio.
+
+    - In RStudio, go to Tools \> Global Options.
+    - Select the Git/SVN section.
+    - If the “Git executable” field is empty, click Browse to locate the
+      git.exe file (on Windows, typically in C:/Program
+      Files/Git/bin/git.exe; on Mac, you can find the path by typing
+      which git in the terminal).
+    - Click OK and restart RStudio if prompted.
+
+3.  Authentication: It’s highly recommended to use a Personal Access
+    Token (PAT) for GitHub authentication. You can generate one on the
+    GitHub website or use the usethis::create_github_token() function in
+    the R console to be guided through the process. Once created, use
+    gitcreds::gitcreds_set() to store your credentials securely.
+
+4.  Request access to the roarutility GitHub repository from Kelly
+    Wentzlof.
+
+5.  Install the package, once you have access to the roarutility
+    repository, by running the following code.
 
 ``` r
 # install.packages("pak")
 pak::pak("yeatmanlab/roarutility")
+library(roarutility)
 ```
 
 ## Usage
