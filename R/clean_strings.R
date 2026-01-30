@@ -67,7 +67,7 @@ clean_strings <- function(df, verbose = TRUE){
   if (length(existing_cols) > 0) {
     for (col in existing_cols) {
       special_char_count <- special_char_count +
-        sum(grepl("[\\[\\]\\\"\\\\]", df[[col]], perl = TRUE), na.rm = TRUE)
+        sum(grepl("['\\[\\]\"\\\\]", df[[col]], perl = TRUE), na.rm = TRUE)
     }
   }
 
@@ -75,7 +75,7 @@ clean_strings <- function(df, verbose = TRUE){
   if (length(existing_cols) > 0) {
     data_cleaned <- df %>%
       dplyr::mutate(dplyr::across(dplyr::all_of(existing_cols),
-                                  ~stringr::str_remove_all(., "[\\[\\]\\\"\\\\]")))
+                                  ~stringr::str_remove_all(., "['\\[\\]\"\\\\]")))
 
     if (verbose && special_char_count > 0) {
       message("Removed special characters from ", special_char_count, " cell(s)")
