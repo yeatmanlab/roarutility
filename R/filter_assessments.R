@@ -75,6 +75,9 @@ filter_assessments <- function(df, completed=TRUE, reliable=FALSE, best_run=FALS
   if(completed) {
     if("completed" %in% names(data_cleaned)) {
       rows_before_completed <- nrow(data_cleaned)
+      # Ensure completed values are lowercase
+      data_cleaned <- data_cleaned %>%
+        dplyr::mutate(completed = tolower(completed))
       data_cleaned <- data_cleaned %>%
         dplyr::filter(completed=="true")
 
@@ -92,6 +95,9 @@ filter_assessments <- function(df, completed=TRUE, reliable=FALSE, best_run=FALS
   if(reliable==TRUE) {
     if("reliable" %in% names(data_cleaned)) {
       rows_before_reliable <- nrow(data_cleaned)
+      # Ensure reliable values are lowercase
+      data_cleaned <- data_cleaned %>%
+        dplyr::mutate(reliable = tolower(reliable))
       data_cleaned <- data_cleaned %>%
         dplyr::filter(reliable %in% c("true", NA)) # for older core runs, reliable was set to NA for when it was not an active feature
 
@@ -112,6 +118,9 @@ filter_assessments <- function(df, completed=TRUE, reliable=FALSE, best_run=FALS
   if(best_run==TRUE) {
     if("best_run" %in% names(data_cleaned)) {
       rows_before_best <- nrow(data_cleaned)
+      # Ensure best_run values are lowercase
+      data_cleaned <- data_cleaned %>%
+        dplyr::mutate(best_run = tolower(best_run))
       data_cleaned <- data_cleaned %>%
         dplyr::filter(best_run=="true")
 

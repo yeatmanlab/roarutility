@@ -8,9 +8,6 @@
 \description{
 The roarutility package provides a collection of convenience functions for
 processing and cleaning ROAR (Rapid Online Assessment of Reading) data.
-This includes functions for removing test, demo, qa, and pilot accounts,
-for reading in data while simulatenously removing opt-outs, cleaning strings
-within the dataframes, cleaning demographics, and more.
 }
 \details{
 Key functions in this package include:

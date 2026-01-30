@@ -324,6 +324,9 @@ remove_accounts <- function(df, test=TRUE, demo=TRUE, pilot=TRUE, qa=TRUE, na=FA
     rows_before_test <- nrow(data_cleaned)
 
     if("is_test_data" %in% names(data_cleaned)) {
+      # Ensure is_test_data values are lower case
+      data_cleaned <- data_cleaned %>%
+        dplyr::mutate(is_test_data = tolower(is_test_data))
       data_cleaned <- data_cleaned %>%
         dplyr::filter(is_test_data == "false")
     }
@@ -359,6 +362,9 @@ remove_accounts <- function(df, test=TRUE, demo=TRUE, pilot=TRUE, qa=TRUE, na=FA
     rows_before_demo <- nrow(data_cleaned)
 
     if("is_demo_data" %in% names(data_cleaned)) {
+      # Ensure is_demo_data values are lower case
+      data_cleaned <- data_cleaned %>%
+        dplyr::mutate(is_demo_data = tolower(is_demo_data))
       data_cleaned <- data_cleaned %>%
         dplyr::filter(is_demo_data == "false")
     }
