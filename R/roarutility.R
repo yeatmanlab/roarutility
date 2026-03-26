@@ -4,7 +4,7 @@
 #'
 #' @description
 #' The roarutility package provides a collection of convenience functions for
-#' processing and cleaning ROAR (Rapid Online Assessment of Reading) data.
+#' processing, cleaning, and analyzing ROAR (Rapid Online Assessment of Reading) data.
 #'
 #' @details
 #' Key functions in this package include:
