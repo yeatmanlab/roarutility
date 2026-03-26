@@ -21,8 +21,9 @@
 #' @param verbose A Boolean value, TRUE (default) or FALSE, that controls whether
 #' informational messages and warnings are displayed
 #'
-#' @returns A marginal distribution plot showing the relationship between a ROAR
-#' assessment proportion correct and the median response time
+#' @returns A scatter plot with marginal distribution plot showing the
+#' relationship between a ROAR assessment proportion correct and the
+#' median response time
 #' @export
 #'
 #' @importFrom ggplot2 aes

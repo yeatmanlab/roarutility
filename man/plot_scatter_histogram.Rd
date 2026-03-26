@@ -31,8 +31,9 @@ representing the median response time the student's run (default:
 informational messages and warnings are displayed}
 }
 \value{
-A marginal distribution plot showing the relationship between a ROAR
-assessment proportion correct and the median response time
+A scatter plot with marginal distribution plot showing the
+relationship between a ROAR assessment proportion correct and the
+median response time
 }
 \description{
 Uses grade, proportion correct, and median response time to create a
