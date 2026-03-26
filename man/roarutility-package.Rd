@@ -13,18 +13,21 @@ processing and cleaning ROAR (Rapid Online Assessment of Reading) data.
 Key functions in this package include:
 \itemize{
 \item \code{\link{roar.read.csv}}: Read ROAR data and remove opt-outs.
-\item \code{\link{remove_accounts}}: Remove test, demo, pilot, QA, or NA
-accounts by selection.
 \item \code{\link{clean_strings}}: Remove extra characters from assigning
 organization variables and convert empty strings to NA values.
 \item \code{\link{remove_empty_cols}}: Remove columns with all NA values.
 \item \code{\link{remove_duplicates}}: Remove duplicate rows.
-\item \code{\link{estimate_grade}}: Estimate grade using age in months.
+\item \code{\link{remove_accounts}}: Remove test, demo, pilot, QA, or NA
+accounts by selection.
 \item \code{\link{standardize_grade}}: Standardize grade to contain uniform values.
+\item \code{\link{estimate_grade}}: Estimate grade using age in months.
 \item \code{\link{filter_assessments}}: Filter complete, best, and reliable runs by selection.
+\item \code{\link{plot_scatter_histogram}}: Create a marginal distribution plot
+showing the relationship between a ROAR assessment proportion correct and
+the median response time
 }
 }
-\section{Typical ROAR Assessment Data Workflow}{
+\section{Typical ROAR Assessment Data Procesing/Cleaning Workflow}{
 
 \enumerate{
 \item Load data using roar.read.csv().
@@ -45,6 +48,13 @@ that can be easily filtered, manipulated, and organized.
 be used to filter the assessments (e.g, filtering best_run, reliable,
 and/or complete assessments for the assessments where these features are active).
 }
+}
+
+\section{Trial Level Analyses}{
+
+a. Use \code{plot_scatter_histogram()} to identify disengaged
+participants and flag unreliable scores by plotting
+median response time by proportion correct using trial-level data.
 }
 
 \examples{
@@ -78,6 +88,19 @@ test_df <- data.frame(task_id = c("roam-alpaca", "swr", "sre", "letter", "sre-es
                       best_run = c(NA, "true", "false", "true", NA, NA),
                       reliable = c(NA, "true", "false", "true", NA, NA))
 clean_df <- filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=TRUE)
+
+# Using plot_scatter_histogram
+n <- 500
+grade_levels <- c("Kindergarten", "1", "2", "3", "4", "5", "6",
+               "7", "8", "9", "10", "11", "12")
+test_df <- data.frame(
+user_grade_at_run = factor(
+  sample(grade_levels, n, replace = TRUE)
+),
+prop_correct = runif(n, 0.3, 1.0),
+median_rt = abs(rnorm(n, 2000, 500))
+)
+plot_scatter_histogram(test_df)
 
 \dontrun{
 # Using roar.read.csv
