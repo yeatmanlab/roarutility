@@ -7,7 +7,7 @@
 \title{roarutility: Convenience Functions for ROAR Data Processing}
 \description{
 The roarutility package provides a collection of convenience functions for
-processing and cleaning ROAR (Rapid Online Assessment of Reading) data.
+processing, cleaning, and analyzing ROAR (Rapid Online Assessment of Reading) data.
 }
 \details{
 Key functions in this package include:
@@ -22,9 +22,9 @@ accounts by selection.
 \item \code{\link{standardize_grade}}: Standardize grade to contain uniform values.
 \item \code{\link{estimate_grade}}: Estimate grade using age in months.
 \item \code{\link{filter_assessments}}: Filter complete, best, and reliable runs by selection.
-\item \code{\link{plot_scatter_histogram}}: Create a marginal distribution plot
-showing the relationship between a ROAR assessment proportion correct and
-the median response time
+\item \code{\link{plot_scatter_histogram}}: Creates a scatter plot with
+marginal distribution plot showing the relationship between a ROAR
+assessment proportion correct and the median response time
 }
 }
 \section{Typical ROAR Assessment Data Procesing/Cleaning Workflow}{
