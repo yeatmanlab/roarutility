@@ -19,6 +19,10 @@ by running the following code.
 ``` r
 # install.packages("pak")
 pak::pak("yeatmanlab/roarutility")
+#> ℹ Loading metadata database✔ Loading metadata database ... done
+#>  
+#> ℹ No downloads are needed
+#> ✔ 1 pkg + 81 deps: kept 43 [5.5s]
 library(roarutility)
 ```
 
@@ -218,3 +222,37 @@ best_run and reliable. In the second example, we indicate that we also
 want to consider best_run and reliable variables as well as completed.
 As you can see, the function only keeps those which have all “true”
 values.
+
+### plot_scatter_histogram
+
+This is an example which shows how you can use plot_scatter_histogram to
+visualize user median response time and proportion correct on a ROAR
+assessment.
+
+``` r
+library(roarutility)
+
+# create dataframe 
+n <- 500
+grade_levels <- c("Kindergarten", "1", "2", "3", "4", "5", "6",
+                  "7", "8", "9", "10", "11", "12")
+test_df <- data.frame(
+  user_grade_at_run = factor(
+    sample(grade_levels, n, replace = TRUE)
+  ),
+  prop_correct = runif(n, 0.3, 1.0),
+  median_rt = abs(rnorm(n, 2000, 500))
+)
+
+# plot the data 
+plot_scatter_histogram(test_df, verbose=FALSE)
+```
+
+<img src="man/figures/README-example-plot-scatter-histogram-1.png" width="100%" />
+
+Notice how the plot includes a scatter plot with the median response
+time on the y-axis and the proportion correct on the x-axis with each of
+their individual distributions against perpendicular sides. This allows
+researchers to visualize clear cutoffs for users/students who have been
+responding too fast and/or who may have not been trying to correctly
+answer the items within the assessment.
