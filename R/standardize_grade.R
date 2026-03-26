@@ -56,7 +56,7 @@ standardize_grade <- function(df, grade_col="user_grade_at_run", verbose=TRUE) {
   # Define standardized mappings for reporting
   standardized_mappings <- list(
     "Pre-K" = c("PK", "Pre-k", "Pre-K", "pre-k", "pre-kindergarten"),
-    "Kindergarten" = c("Kindergarten", "K", "Kindergarden", "k"),
+    "Kindergarten" = c("Kindergarten", "K", "Kindergarden", "k", "KG"),
     "1" = c("1", "1st", "01"),
     "2" = c("2", "2nd", "02"),
     "3" = c("3", "3rd", "03"),
@@ -92,7 +92,7 @@ standardize_grade <- function(df, grade_col="user_grade_at_run", verbose=TRUE) {
 
   # Perform the standardization
   data_cleaned <- df %>% dplyr::mutate(!!grade_col := dplyr::case_when(
-    !!rlang::sym(grade_col) %in% c("Kindergarten", "K", "Kindergarden", "k", "kindergarten") ~ "Kindergarten",
+    !!rlang::sym(grade_col) %in% c("Kindergarten", "K", "Kindergarden", "k", "kindergarten", "KG") ~ "Kindergarten",
     !!rlang::sym(grade_col) %in% c("1", "1st", "01") ~ "1",
     !!rlang::sym(grade_col) %in% c("2", "2nd", "02") ~ "2",
     !!rlang::sym(grade_col) %in% c("3", "3rd", "03") ~ "3",
