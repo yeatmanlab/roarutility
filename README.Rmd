@@ -24,7 +24,7 @@ The goal of roarutility is to process ROAR data. It provides convenience functio
 
 Install the package, once you have access to the roarutility repository, by running the following code. 
 
-```{r install, eval-FALSE, output=FALSE}
+```{r install, eval=FALSE, output=FALSE}
 # install.packages("pak")
 pak::pak("yeatmanlab/roarutility")
 library(roarutility)
@@ -106,40 +106,6 @@ Notice how the last row test_df[5,] was removed because it had identical values 
 
 Removes all indicated accounts from the dataframe. Reseearchers can read in data and indicate which or all of the following types of accounts they would like to remove from the dataframe. The function defaults to removing test, demo, pilot, and QA accounts and defaults to not removing NA assessment_pid. The function runs through the organization IDs (i.e., assigning_districts, etc.). It also uses string detection to determine if there are any "test", "pilot", "qa", or "demo" strings within the assessment_pid column. Finally, it runs through to determine if there are test or demo using the variables is_test_data and is_demo_data (if these accounts were chosen to be removed). If selected, the function will also remove assessment_pid = NA. 
 
-### estimate_grade 
-
-This is a basic example which shows you how estimate_grade() uses age_months_at_run to estimate grade for students this school year and for students who were missing grade values. 
-
-```{r example-estimate-grade, eval=FALSE}
-library(roarutility)
-test_df <- data.frame(
-  age_months = c(75, 83, 99, 200),
-  user_grade = c(NA, "2", "2", "10"),
-  time_started = c("2025-03-12", "2024-02-17", "2026-01-09", "2025-04-19")
-)
-
-clean_df <- test_df %>% mutate(user_grade = case_when(
-  time_started < as.Date("2024-07-31") ~ map_chr(age_months, estimate_grade),
-  TRUE ~ user_grade))
-clean_df
-#   age_months user_grade time_started
-# 1         75       <NA>   2025-03-12
-# 2         83          1   2024-02-17
-# 3         99          2   2026-01-09
-# 4        200         10   2025-04-19
-
-clean_df <- clean_df %>% mutate(user_grade = case_when(
-  is.na(user_grade) ~ map_chr(age_months, estimate_grade),
-  TRUE ~ user_grade))
-#   age_months user_grade time_started
-# 1         75          1   2025-03-12
-# 2         83          1   2024-02-17
-# 3         99          2   2026-01-09
-# 4        200         10   2025-04-19
-```
-
-Notice in the first example of estimate_grade(), we use it to adjust grades that were logged prior to the 24-25 school year. The only grade that changes is row 2 and the function accurately recategorizes the grade from 2nd to 1st grade based on the age in the months at the time of the run. In the second example, we use the function to fill in missing grades using age in months. The only grade that changes is in row 1 and function accurately fills in the missing value for grade with "1" for 1st grade. 
-
 ### standardize_grade
 
 This is a basic example which shows you how standardize_grade() uses a grade variable and dataframe to create uniform values in grade. 
@@ -156,6 +122,33 @@ clean_df$user.grade
 ```
 
 Notice how the grades went from nonuniform values "2", "2nd", "01" to more uniform values which can help researchers with filtering, faceting, and overall data organizations. 
+
+### correct_historical_grade
+
+This is a basic example which shows you how correct_historical_grade() aligns grades across school years for students who have runs in more than one year. It uses each student's grade in the 2024-25 school year (or the first year after it) as the reference and lines up earlier grades with it. Run standardize_grade() first so grades are in a uniform format.
+
+```{r example-correct-historical-grade, eval=FALSE}
+library(roarutility)
+test_df <- data.frame(
+  roar_uid = c("A", "A", "B", "C", "C"),
+  user_grade_at_run = c("5", "5", "3", "Kindergarten", "1"),
+  time_started = c("2023-10-01 10:00:00 UTC", "2024-10-01 10:00:00 UTC",
+                   "2023-10-01 10:00:00 UTC", "2023-10-01 10:00:00 UTC",
+                   "2024-10-01 10:00:00 UTC")
+)
+
+clean_df <- correct_historical_grade(test_df)
+# Earlier runs with a 2024-25 (or later) reference grade: 2 | updated: 1 (1 students)
+clean_df
+#   roar_uid user_grade_at_run            time_started grade_corrected
+# 1        A                 4 2023-10-01 10:00:00 UTC            TRUE
+# 2        A                 5 2024-10-01 10:00:00 UTC           FALSE
+# 3        B                 3 2023-10-01 10:00:00 UTC           FALSE
+# 4        C      Kindergarten 2023-10-01 10:00:00 UTC           FALSE
+# 5        C                 1 2024-10-01 10:00:00 UTC           FALSE
+```
+
+Notice how student A's 2023-24 run is updated from 5 to 4, one grade below their 2024-25 grade, and is marked TRUE in the new grade_corrected column. Student B only has a 2023-24 run, so there is no reference grade and their grade stays the same. Student C's grades already move up one grade from Kindergarten to 1, so they stay the same too. Researchers can set keep_diagnostics = TRUE to keep the school year, original grade, and reference grade columns for review.
 
 ### filter_assessments
 
@@ -185,6 +178,33 @@ clean_df
 ```
 
 Notice how in the first example, filter_assessments() only keeps the assessments where completed=="true", but did not consider the values for best_run and reliable. In the second example, we indicate that we also want to consider best_run and reliable variables as well as completed. As you can see, the function only keeps those which have all "true" values. 
+
+### run_count
+
+This is a basic example which shows you how run_count() numbers each student's runs in the order they took them and counts how many runs each student has in total. By default, runs are counted separately for each task.
+
+```{r example-run-count, eval=FALSE}
+library(roarutility)
+test_df <- data.frame(
+  assessment_pid = c("a", "a", "a", "b"),
+  run_id = c("r2", "r1", "r1", "r3"),
+  task_id = "swr",
+  assessment_stage = c("test", "practice", "test", "test"),
+  time_started = c("2025-03-01 10:00:00", "2024-10-01 10:00:00",
+                   "2024-10-01 10:00:00", "2025-01-15 09:00:00")
+)
+
+counted_df <- run_count(test_df)
+# Counted 3 run(s) for 2 student(s) across 1 task(s). Max runs per student/task: 2.
+counted_df[, c("assessment_pid", "run_id", "assessment_stage", "run_count", "total_runs")]
+#   assessment_pid run_id assessment_stage run_count total_runs
+# 1              a     r2             test         2          2
+# 2              a     r1         practice         1          2
+# 3              a     r1             test         1          2
+# 4              b     r3             test         1          1
+```
+
+Notice how student a's run r1 is numbered 1 because it happened first, even though it appears after r2 in the dataframe. Both rows of r1 (practice and test) get the same number because they belong to the same run. Student a has 2 runs in total and student b has 1. Use task_col = NULL to count all of a student's runs together across tasks, or filter to run_count == 1 to keep only each student's first attempt.
 
 ### plot_scatter_histogram 
 
