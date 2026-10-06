@@ -7,5 +7,10 @@ test_df <- data.frame(
 
 test_that("filter_assessments properly filters assessments indicated", {
   expect_equal(filter_assessments(test_df)[,2], c("true", "true", "true", "true"))
-  expect_equal(filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=TRUE)[,2], c("true", "true"))
+  # removes 6 of 8 rows on purpose, so the ">50% removed" warning is expected
+  expect_warning(
+    res <- filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=TRUE),
+    "More than 50% of rows"
+  )
+  expect_equal(res[,2], c("true", "true"))
 })
