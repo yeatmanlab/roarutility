@@ -17,14 +17,18 @@
 #'   \item \code{\link{remove_accounts}}: Remove test, demo, pilot, QA, or NA
 #'   accounts by selection.
 #'   \item \code{\link{standardize_grade}}: Standardize grade to contain uniform values.
-#'   \item \code{\link{estimate_grade}}: Estimate grade using age in months.
+#'   \item \code{\link{correct_historical_grade}}: Align grades on earlier runs
+#'   for returning students with the grade recorded in a reference school year
+#'   (2024-25 by default).
 #'   \item \code{\link{filter_assessments}}: Filter complete, best, and reliable runs by selection.
+#'   \item \code{\link{run_count}}: Number each student's runs in chronological
+#'   order and count their total runs, overall or per task.
 #'   \item \code{\link{plot_scatter_histogram}}: Creates a scatter plot with
 #'   marginal distribution plot showing the relationship between a ROAR
 #'   assessment proportion correct and the median response time
 #' }
 #'
-#' @section Typical ROAR Assessment Data Procesing/Cleaning Workflow:
+#' @section Typical ROAR Assessment Data Processing/Cleaning Workflow:
 #' 1. Load data using roar.read.csv().
 #' 2. Use \code{clean_strings()} to remove extra characters from assigning
 #' organization variables in preparation for merging with the organization key.
@@ -38,10 +42,14 @@
 #' and QA accounts. Researchers also have the option of removing NA assessment_pid.
 #' 6. Use \code{standardize_grade()} to convert grade values to standard uniform values
 #' that can be easily filtered, manipulated, and organized.
-#' 7. Use \code{estimate_grade()} to estimate missing grades using age in months.
+#' 7. Use \code{correct_historical_grade()} to align grades across school years
+#' for students with runs in more than one year. This is recommended when
+#' working with runs from before the 2024-25 school year.
 #' 8. Use \code{filter_assessments()} to select which criteria should
 #' be used to filter the assessments (e.g, filtering best_run, reliable,
 #' and/or complete assessments for the assessments where these features are active).
+#' 9. Use \code{run_count()} to number each student's runs over time (e.g., to
+#' keep only first attempts or to study repeated testing).
 #'
 #' @section Trial Level Analyses:
 #' a. Use \code{plot_scatter_histogram()} to identify disengaged
@@ -73,6 +81,14 @@
 #'                                      "Kindergarten", "1", "09"))
 #' clean_df <- standardize_grade(test_df, "user.grade")
 #'
+#' # Using correct_historical_grade
+#' test_df <- data.frame(
+#'   roar_uid = c("A", "A", "B"),
+#'   user_grade_at_run = c("5", "5", "3"),
+#'   time_started = c("2023-10-01 10:00:00 UTC", "2024-10-01 10:00:00 UTC",
+#'                    "2023-10-01 10:00:00 UTC"))
+#' clean_df <- correct_historical_grade(test_df)
+#'
 #' # Using filter_assessments
 #' test_df <- data.frame(task_id = c("roam-alpaca", "swr", "sre", "letter", "sre-es", "swr-es"),
 #'                       completed = c("true", "true", "false", "true", "false", "false"),
@@ -80,11 +96,20 @@
 #'                       reliable = c(NA, "true", "false", "true", NA, NA))
 #' clean_df <- filter_assessments(test_df, completed=TRUE, best_run=TRUE, reliable=TRUE)
 #'
+#' # Using run_count
+#' test_df <- data.frame(
+#'   assessment_pid = c("a", "a", "a", "b"),
+#'   run_id = c("r2", "r1", "r1", "r3"),
+#'   task_id = "swr",
+#'   time_started = c("2025-03-01 10:00:00", "2024-10-01 10:00:00",
+#'                    "2024-10-01 10:00:00", "2025-01-15 09:00:00"))
+#' counted_df <- run_count(test_df)
+#'
 #' # Using plot_scatter_histogram
 #' n <- 500
 #' grade_levels <- c("Kindergarten", "1", "2", "3", "4", "5", "6",
 #'                "7", "8", "9", "10", "11", "12")
-
+#'
 #' test_df <- data.frame(
 #' user_grade_at_run = factor(
 #'   sample(grade_levels, n, replace = TRUE)
@@ -106,18 +131,6 @@
 #' # Keep everything except NA values
 #' clean_data <- remove_accounts(my_data, test = FALSE, demo = FALSE,
 #'                                pilot = FALSE, qa = FALSE, na = TRUE)
-#'
-#' # Using estimate_grade
-#' test_df <- data.frame(
-#'   age_months = c(75, 83, 99, 200),
-#'   user_grade = c(NA, "2", "2", "10"),
-#'   time_started = c("2025-03-12", "2024-02-17", "2026-01-09", "2025-04-19"))
-#' clean_df <- test_df %>% mutate(user_grade = case_when(
-#'   time_started < as.Date("2024-07-31") ~ map_chr(age_months, estimate_grade),
-#'   TRUE ~ user_grade))
-#' clean_df <- clean_df %>% mutate(user_grade = case_when(
-#'   is.na(user_grade) ~ map_chr(age_months, estimate_grade),
-#'   TRUE ~ user_grade))
 #' }
 #'
 #' @keywords roar utility convenience
